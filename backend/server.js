@@ -34,7 +34,7 @@ app.use(cookieParser());
 
  // Listar temas
 app.get('/api/temas', async (req, res) => {
-  // Buscar temas do Supabase e ordenar por votos
+  // Buscar temas do Supabase
   const { data, error } = await supabase
     .from('temas')
     .select('*')
@@ -63,7 +63,7 @@ app.post('/api/sugerir', async (req, res) => {
     return res.status(429).json({ erro: 'Limite de sugestões atingido.' });
   }
 
-  // Verificar similares no Supabase
+  // Verificar similares em temas
   const { data: similares, error: errorSimilares } = await supabase
     .from('temas')
     .select('*')
@@ -76,7 +76,7 @@ app.post('/api/sugerir', async (req, res) => {
     return res.status(409).json({ erro: 'Tema similar já existe.', similares });
   }
 
-  // Adicionar tema no Supabase
+  // Adicionar sugestão em temas
   const { data: novoTema, error: errorInsert } = await supabase
     .from('temas')
     .insert([
@@ -102,8 +102,8 @@ app.post('/api/sugerir', async (req, res) => {
   res.json(novoTema);
 });
 
-// Votar em tema
-app.post('/api/votar', (req, res) => {
+ // Votar em tema
+app.post('/api/votar', async (req, res) => {
   const ip = req.ip;
   const { id } = req.body;
   if (typeof id !== 'number') {
@@ -113,13 +113,33 @@ app.post('/api/votar', (req, res) => {
   if (votosPorIp[ip].length >= LIMITE_VOTOS) {
     return res.status(429).json({ erro: 'Limite de votos atingido.' });
   }
-  const tema = temas.find(t => t.id === id);
-  if (!tema) {
+
+  // Verifica se o tema existe
+  const { data: tema, error: errorTema } = await supabase
+    .from('temas')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (errorTema || !tema) {
     return res.status(404).json({ erro: 'Tema não encontrado.' });
   }
-  tema.votos++;
+
+  // Atualiza o campo votos (+1)
+  const { data: temaAtualizado, error: errorUpdate } = await supabase
+    .from('temas')
+    .update({ votos: tema.votos + 1 })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (errorUpdate) {
+    return res.status(500).json({ erro: 'Erro ao registrar voto.' });
+  }
+
   votosPorIp[ip].push(Date.now());
-  res.json({ sucesso: true, votos: tema.votos });
+
+  res.json({ sucesso: true, votos: temaAtualizado.votos });
 });
 
 // Buscar temas similares
