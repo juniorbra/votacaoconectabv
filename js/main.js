@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Carregar temas do backend
   async function carregarTemas() {
     try {
-      const resp = await fetch('http://localhost:3001/api/temas', { credentials: 'include' });
+const resp = await fetch('https://votacaoconectabv.onrender.com/api/temas', { credentials: 'include' });
       temas = await resp.json();
       renderizarTemas();
     } catch (err) {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Buscar temas similares do backend
     sugestoesSimilares.innerHTML = "Buscando temas similares...";
     try {
-      const respSimilares = await fetch(`http://localhost:3001/api/similares?q=${encodeURIComponent(novoTema)}`, { credentials: 'include' });
+const respSimilares = await fetch(`https://votacaoconectabv.onrender.com/api/similares?q=${encodeURIComponent(novoTema)}`, { credentials: 'include' });
       const similares = await respSimilares.json();
       if (similares.length > 0) {
         sugestoesSimilares.innerHTML = "<strong>Temas similares já cadastrados:</strong><ul>" +
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Enviar sugestão para backend
     try {
-      const resp = await fetch('http://localhost:3001/api/sugerir', {
+const resp = await fetch('https://votacaoconectabv.onrender.com/api/sugerir', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const id = Number(e.target.dataset.id);
       try {
-        const resp = await fetch('http://localhost:3001/api/votar', {
+const resp = await fetch('https://votacaoconectabv.onrender.com/api/votar', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = Number(e.target.dataset.id);
       if (confirm("Tem certeza que deseja excluir esta sugestão?")) {
         try {
-          const resp = await fetch(`http://localhost:3001/api/temas/${id}`, {
+const resp = await fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
             method: 'DELETE',
             credentials: 'include'
           });
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       try {
-        fetch(`http://localhost:3001/api/temas/${id}`, {
+fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
