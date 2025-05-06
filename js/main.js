@@ -84,9 +84,12 @@ const respSimilares = await fetch(`https://votacaoconectabv.onrender.com/api/sim
 
     // Enviar sugestão para backend
     try {
-const resp = await fetch('https://votacaoconectabv.onrender.com/api/sugerir', {
+      const resp = await fetch('https://votacaoconectabv.onrender.com/api/sugerir', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {})
+        },
         credentials: 'include',
         body: JSON.stringify({ titulo: novoTema, descricao: novaDescricao })
       });
