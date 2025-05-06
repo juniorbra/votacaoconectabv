@@ -273,8 +273,46 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAdminUI();
   });
 
+  // Função para calcular a data da próxima live (sexta-feira)
+  function calcularProximaLive() {
+    const hoje = new Date();
+    const diaDaSemana = hoje.getDay(); // 0 = Domingo, 6 = Sábado, 5 = Sexta
+    
+    // Calcular quantos dias faltam para a próxima sexta-feira
+    // Se hoje for sexta (5), verificamos se já passou da data atual
+    let diasAteProximaSexta;
+    
+    if (diaDaSemana === 5) { // Hoje é sexta
+      // Se já passou da data atual, mostra a próxima sexta
+      diasAteProximaSexta = 7;
+    } else if (diaDaSemana < 5) { // Domingo a quinta
+      diasAteProximaSexta = 5 - diaDaSemana;
+    } else { // Sábado
+      diasAteProximaSexta = 6;
+    }
+    
+    // Criar data da próxima sexta
+    const proximaSexta = new Date(hoje);
+    proximaSexta.setDate(hoje.getDate() + diasAteProximaSexta);
+    
+    // Formatar a data como DD/MM/YYYY
+    const dia = String(proximaSexta.getDate()).padStart(2, '0');
+    const mes = String(proximaSexta.getMonth() + 1).padStart(2, '0');
+    const ano = proximaSexta.getFullYear();
+    
+    return `${dia}/${mes}/${ano}`;
+  }
+  
+  // Atualizar a informação da próxima live
+  function atualizarProximaLive() {
+    const proximaLiveElement = document.getElementById('proxima-live');
+    const dataProximaLive = calcularProximaLive();
+    proximaLiveElement.innerHTML = `<strong>Data da próxima live: ${dataProximaLive} - Acesse <a href="https://youtube.com/@botvance" target="_blank" style="color: #a259f7;">youtube.com/@botvance</a></strong>`;
+  }
+
   // Inicialização
   carregarTemas();
   atualizarLimiteSugestoes();
   updateAdminUI();
+  atualizarProximaLive();
 });
