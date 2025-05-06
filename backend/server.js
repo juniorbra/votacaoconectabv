@@ -37,19 +37,25 @@ app.get('/api/temas', (req, res) => {
 app.post('/api/sugerir', (req, res) => {
   const ip = req.ip;
   const { titulo, descricao } = req.body;
+  const authHeader = req.headers.authorization;
+  const isAdmin = authHeader && authHeader === `Bearer ${ADMIN_TOKEN}`;
+
   if (!titulo || typeof titulo !== 'string' || !titulo.trim()) {
     return res.status(400).json({ erro: 'Título inválido.' });
   }
-  // Limite por IP
+
+  // Limite por IP (exceto admin)
   sugestoesPorIp[ip] = sugestoesPorIp[ip] || [];
-  if (sugestoesPorIp[ip].length >= LIMITE_SUGESTOES) {
+  if (!isAdmin && sugestoesPorIp[ip].length >= LIMITE_SUGESTOES) {
     return res.status(429).json({ erro: 'Limite de sugestões atingido.' });
   }
+
   // Verificar similares
   const similares = temas.filter(t => t.titulo.toLowerCase().includes(titulo.toLowerCase()));
   if (similares.length > 0) {
     return res.status(409).json({ erro: 'Tema similar já existe.', similares });
   }
+
   // Adicionar tema
   const novoTema = {
     id: Date.now(),
@@ -59,7 +65,12 @@ app.post('/api/sugerir', (req, res) => {
     status: "Sugestão"
   };
   temas.push(novoTema);
-  sugestoesPorIp[ip].push(Date.now());
+
+  // Só conta sugestão para não-admin
+  if (!isAdmin) {
+    sugestoesPorIp[ip].push(Date.now());
+  }
+
   res.json(novoTema);
 });
 
