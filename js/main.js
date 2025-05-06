@@ -1,6 +1,6 @@
 /**
  * Lógica principal do frontend da plataforma de votação
- * Atualizado: agora usa backend local (localhost:3001) que conecta ao Supabase.
+ * Atualizado: usa backend remoto (votacaoconectabv.onrender.com) que conecta ao Supabase.
  */
 const BASE_URL = "https://votacaoconectabv.onrender.com";
 
