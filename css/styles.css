@@ -1,0 +1,355 @@
+/* Reset básico */
+body, h1, h2, h3, h4, h5, h6, p, ul, li, input, button, select, form {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  background: radial-gradient(ellipse at 50% 30%, #23243a 60%, #18192a 100%);
+  color: #e2e6f3;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Estrelas no fundo */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="white" opacity="0.12"/><circle cx="200" cy="80" r="1.2" fill="white" opacity="0.10"/><circle cx="400" cy="200" r="0.8" fill="white" opacity="0.10"/><circle cx="800" cy="400" r="1" fill="white" opacity="0.10"/><circle cx="1200" cy="100" r="1.1" fill="white" opacity="0.10"/></svg>');
+  background-repeat: repeat;
+  background-size: 400px 400px;
+}
+
+/* Header */
+header {
+  background: #18192a;
+  color: #fff;
+  padding: 1.5rem 0 1rem 0;
+  text-align: center;
+  box-shadow: 0 2px 8px 0 #0002;
+  position: relative;
+  z-index: 1;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #a259f7 20%, #ff4ecd 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header nav {
+  margin-top: 0.5rem;
+}
+
+header nav a {
+  color: #e2e6f3;
+  margin: 0 1.2rem;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.08rem;
+  transition: color 0.2s;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+header nav a:hover {
+  color: #ff4ecd;
+  background: #23243a;
+}
+
+/* Main container */
+main {
+  max-width: 540px;
+  margin: 2.5rem auto 0 auto;
+  background: rgba(36, 38, 60, 0.98);
+  padding: 2.2rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 #0003;
+  position: relative;
+  z-index: 1;
+  border: 1.5px solid #282a40;
+}
+
+section + section {
+  margin-top: 2.5rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+
+/* Formulário de sugestão */
+#sugestao-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+  width: 100%;
+}
+
+#sugestao-form input,
+#sugestao-form textarea,
+#sugestao-form .btn {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+#tema-input,
+#descricao-input {
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid #2d2f4a;
+  background: #23243a;
+  color: #e2e6f3;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 0;
+  resize: vertical;
+}
+
+#tema-input:focus,
+#descricao-input:focus {
+  border: 1.5px solid #a259f7;
+}
+
+.btn, button, .upvote-btn {
+  background: linear-gradient(90deg, #a259f7 0%, #ff4ecd 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.08rem;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 #a259f733;
+  transition: background 0.2s, transform 0.1s;
+  outline: none;
+  min-width: 120px;
+  margin-left: 0.2rem;
+}
+
+/* Botão admin outline */
+.btn-outline {
+  background: transparent !important;
+  color: #a259f7 !important;
+  border: 1.5px solid #a259f7 !important;
+  font-size: 0.98rem !important;
+  font-weight: 500 !important;
+  padding: 0.45rem 1.1rem !important;
+  min-width: 70px !important;
+  margin-left: 0 !important;
+  box-shadow: none !important;
+}
+
+.btn-outline:hover, .btn-outline:focus {
+  background: rgba(162, 89, 247, 0.08) !important;
+  color: #ff4ecd !important;
+  border-color: #ff4ecd !important;
+}
+
+.btn:hover, button:hover, .upvote-btn:hover {
+  background: linear-gradient(90deg, #ff4ecd 0%, #a259f7 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.upvote-btn {
+  min-width: 56px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(90deg, #23243a 0%, #a259f7 100%);
+  border: 1.5px solid #a259f7;
+  color: #fff;
+  box-shadow: none;
+}
+
+.upvote-btn span {
+  font-weight: 700;
+  margin-left: 0.2rem;
+}
+
+.upvote-btn:hover {
+  background: linear-gradient(90deg, #ff4ecd 0%, #23243a 100%);
+  border-color: #ff4ecd;
+}
+
+/* Sugestões similares */
+#sugestoes-similares {
+  margin-top: 0.5rem;
+  color: #ff4ecd;
+  font-size: 0.98rem;
+}
+
+#limite-sugestoes-info {
+  color: #a259f7;
+  font-size: 0.98rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Lista de temas */
+#lista-temas {
+  list-style: none;
+  margin-top: 1.2rem;
+  padding: 0;
+}
+
+#lista-temas li {
+  background: #23243a;
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  padding: 1.3rem 1.2rem 1.2rem 1.2rem;
+  box-shadow: 0 2px 12px 0 #0002;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  border: 1.5px solid #282a40;
+  position: relative;
+}
+
+.tema-titulo {
+  font-size: 1.25rem;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.1px;
+  line-height: 1.2;
+}
+
+.tema-descricao {
+  color: #c7c9e6;
+  font-size: 1.01rem;
+  margin-bottom: 0.7rem;
+  margin-top: 0.1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.upvote-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.7rem;
+  background: linear-gradient(90deg, #3a2d7d 0%, #a259f7 60%, #ff4ecd 100%);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  padding: 0.7rem 1.2rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.1rem;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.2s, transform 0.1s;
+  outline: none;
+}
+
+.upvote-bar:hover {
+  background: linear-gradient(90deg, #ff4ecd 0%, #a259f7 100%);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.upvote-emoji {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.upvote-num {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-left: 0.2rem;
+}
+
+.tag {
+  display: inline-block;
+  background: linear-gradient(90deg, #a259f7 0%, #ff4ecd 100%);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 0.18rem 0.7rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.2px;
+}
+
+.status {
+  display: inline-block;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #a259f7;
+  background: #18192a;
+  border-radius: 6px;
+  padding: 0.18rem 0.7rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.2px;
+}
+
+label, select {
+  font-size: 1rem;
+  color: #e2e6f3;
+  margin-right: 0.5rem;
+  background: #23243a;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+}
+
+select {
+  border: 1.5px solid #2d2f4a;
+  color: #a259f7;
+  font-weight: 600;
+  margin-left: 0.2rem;
+}
+
+select:focus {
+  border-color: #a259f7;
+  outline: none;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1.5rem 0 1.2rem 0;
+  background: #18192a;
+  color: #a0a4c0;
+  margin-top: 3rem;
+  font-size: 1rem;
+  letter-spacing: 0.2px;
+  border-top: 1.5px solid #23243a;
+}
+
+/* Responsivo */
+@media (max-width: 700px) {
+  main {
+    max-width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
+  header h1 {
+    font-size: 1.3rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+  }
+}

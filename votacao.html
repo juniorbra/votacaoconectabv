@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votação de Temas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Votação de Temas para Vídeos Youtube</h1>
+    <nav>
+      <a href="https://site.botvance.com.br/" target="_blank" rel="noopener">Início</a>
+      <a href="https://site.botvance.com.br/templatesn8n.html" target="_blank" rel="noopener">Templates n8n</a>
+      <a href="votacao.html">Votação</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <div id="admin-login" style="margin-bottom:1.5rem;">
+        <input type="password" id="admin-password" placeholder="Senha de admin" style="width: 220px; padding: 0.5rem; border-radius: 8px; border: 1.5px solid #2d2f4a; background: #23243a; color: #e2e6f3;">
+        <button id="admin-login-btn" class="btn-outline" style="min-width: 80px;">Entrar</button>
+        <button id="admin-logout-btn" class="btn" style="min-width: 80px; display:none;">Sair</button>
+        <span id="admin-status" style="margin-left:1rem; color:#a259f7; font-size:1rem;"></span>
+      </div>
+      <h2>Sugira um novo tema</h2>
+      <form id="sugestao-form">
+        <input type="text" id="tema-input" placeholder="Título do tema" autocomplete="off" required>
+        <textarea id="descricao-input" placeholder="Descreva sua sugestão (opcional)" rows="3"></textarea>
+        <button type="submit" class="btn">Sugerir</button>
+        <div id="sugestoes-similares"></div>
+      </form>
+      <p id="limite-sugestoes-info"></p>
+    </section>
+    <section>
+      <h2>Temas para votar</h2>
+      <ul id="lista-temas">
+        <!-- Temas serão carregados aqui via JS -->
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Plataforma de Votação</p>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>
