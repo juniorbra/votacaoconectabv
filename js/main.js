@@ -1,4 +1,8 @@
-// Lógica principal do frontend da plataforma de votação
+/**
+ * Lógica principal do frontend da plataforma de votação
+ * Atualizado: agora usa backend local (localhost:3001) que conecta ao Supabase.
+ */
+const BASE_URL = "http://localhost:3001";
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elementos principais
@@ -20,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Carregar temas do backend
   async function carregarTemas() {
     try {
-const resp = await fetch('https://votacaoconectabv.onrender.com/api/temas', { credentials: 'include' });
+      const resp = await fetch(`${BASE_URL}/api/temas`, { credentials: 'include' });
       temas = await resp.json();
       renderizarTemas();
     } catch (err) {
@@ -68,7 +72,7 @@ const resp = await fetch('https://votacaoconectabv.onrender.com/api/temas', { cr
     // Buscar temas similares do backend
     sugestoesSimilares.innerHTML = "Buscando temas similares...";
     try {
-const respSimilares = await fetch(`https://votacaoconectabv.onrender.com/api/similares?q=${encodeURIComponent(novoTema)}`, { credentials: 'include' });
+      const respSimilares = await fetch(`${BASE_URL}/api/similares?q=${encodeURIComponent(novoTema)}`, { credentials: 'include' });
       const similares = await respSimilares.json();
       if (similares.length > 0) {
         sugestoesSimilares.innerHTML = "<strong>Temas similares já cadastrados:</strong><ul>" +
@@ -84,7 +88,7 @@ const respSimilares = await fetch(`https://votacaoconectabv.onrender.com/api/sim
 
     // Enviar sugestão para backend
     try {
-      const resp = await fetch('https://votacaoconectabv.onrender.com/api/sugerir', {
+      const resp = await fetch(`${BASE_URL}/api/sugerir`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +132,7 @@ const respSimilares = await fetch(`https://votacaoconectabv.onrender.com/api/sim
       }
       const id = Number(e.target.dataset.id);
       try {
-const resp = await fetch('https://votacaoconectabv.onrender.com/api/votar', {
+        const resp = await fetch(`${BASE_URL}/api/votar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -152,7 +156,7 @@ const resp = await fetch('https://votacaoconectabv.onrender.com/api/votar', {
       const id = Number(e.target.dataset.id);
       if (confirm("Tem certeza que deseja excluir esta sugestão?")) {
         try {
-          const resp = await fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
+          const resp = await fetch(`${BASE_URL}/api/temas/${id}`, {
             method: 'DELETE',
             headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
             credentials: 'include'
@@ -200,7 +204,7 @@ const resp = await fetch('https://votacaoconectabv.onrender.com/api/votar', {
         return;
       }
       try {
-        fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
+        fetch(`${BASE_URL}/api/temas/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -244,7 +248,7 @@ const resp = await fetch('https://votacaoconectabv.onrender.com/api/votar', {
     e.preventDefault();
     const pwd = document.getElementById("admin-password").value;
     try {
-      const resp = await fetch('https://votacaoconectabv.onrender.com/api/admin/login', {
+      const resp = await fetch(`${BASE_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ senha: pwd })
