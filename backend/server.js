@@ -2,6 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+// Supabase
+const { createClient } = require('@supabase/supabase-js');
+const SUPABASE_URL = 'https://jzceqhrvfohpqeamqjsq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp6Y2VxaHJ2Zm9ocHFlYW1xanNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1NTQ3ODUsImV4cCI6MjA2MjEzMDc4NX0.Ryr5qFNNmPphxHcUI4f9u4hG8w9NEN4almWiwu4z8V8';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const app = express();
 const PORT = 3001;
 
@@ -27,14 +33,21 @@ app.use(express.json());
 app.use(cookieParser());
 
  // Listar temas
-app.get('/api/temas', (req, res) => {
-  // Ordenar por mais votados
-  const ordenados = [...temas].sort((a, b) => b.votos - a.votos);
-  res.json(ordenados);
+app.get('/api/temas', async (req, res) => {
+  // Buscar temas do Supabase e ordenar por votos
+  const { data, error } = await supabase
+    .from('temas')
+    .select('*')
+    .order('votos', { ascending: false });
+
+  if (error) {
+    return res.status(500).json({ erro: 'Erro ao buscar temas.' });
+  }
+  res.json(data);
 });
 
  // Sugerir novo tema
-app.post('/api/sugerir', (req, res) => {
+app.post('/api/sugerir', async (req, res) => {
   const ip = req.ip;
   const { titulo, descricao } = req.body;
   const authHeader = req.headers.authorization;
@@ -50,21 +63,36 @@ app.post('/api/sugerir', (req, res) => {
     return res.status(429).json({ erro: 'Limite de sugestões atingido.' });
   }
 
-  // Verificar similares
-  const similares = temas.filter(t => t.titulo.toLowerCase().includes(titulo.toLowerCase()));
-  if (similares.length > 0) {
+  // Verificar similares no Supabase
+  const { data: similares, error: errorSimilares } = await supabase
+    .from('temas')
+    .select('*')
+    .ilike('titulo', `%${titulo}%`);
+
+  if (errorSimilares) {
+    return res.status(500).json({ erro: 'Erro ao buscar temas similares.' });
+  }
+  if (similares && similares.length > 0) {
     return res.status(409).json({ erro: 'Tema similar já existe.', similares });
   }
 
-  // Adicionar tema
-  const novoTema = {
-    id: Date.now(),
-    titulo: titulo.trim(),
-    descricao: descricao ? descricao.trim() : "",
-    votos: 0,
-    status: "Sugestão"
-  };
-  temas.push(novoTema);
+  // Adicionar tema no Supabase
+  const { data: novoTema, error: errorInsert } = await supabase
+    .from('temas')
+    .insert([
+      {
+        titulo: titulo.trim(),
+        descricao: descricao ? descricao.trim() : "",
+        votos: 0,
+        status: "Sugestão"
+      }
+    ])
+    .select()
+    .single();
+
+  if (errorInsert) {
+    return res.status(500).json({ erro: 'Erro ao adicionar tema.' });
+  }
 
   // Só conta sugestão para não-admin
   if (!isAdmin) {
