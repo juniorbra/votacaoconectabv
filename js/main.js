@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const limiteSugestoesInfo = document.getElementById('limite-sugestoes-info');
   const listaTemas = document.getElementById('lista-temas');
 
-  // Estado local (será substituído por integração com backend)
+  // Estado local (será substituído por integração com backend) 
   let temas = [];
   let sugestoesFeitas = 0;
   const LIMITE_SUGESTOES = 3;
