@@ -108,10 +108,22 @@ app.get('/api/temas/filtrar', (req, res) => {
 });
 
 const ADMIN_SECRET = "minha-senha-super-secreta";
+const ADMIN_TOKEN = "admin-token-123"; // Token simples para exemplo
 
-// Middleware para proteger rotas de admin
+// Novo endpoint de login admin (retorna token)
+app.post('/api/admin/login', (req, res) => {
+  const { senha } = req.body;
+  if (senha === ADMIN_SECRET) {
+    return res.json({ token: ADMIN_TOKEN });
+  }
+  return res.status(401).json({ erro: "Senha incorreta." });
+});
+
+// Middleware para proteger rotas de admin (agora aceita token via header)
 function requireAdmin(req, res, next) {
-  if (req.cookies && req.cookies.admin === ADMIN_SECRET) {
+  // Aceita token via header Authorization: Bearer <token>
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader === `Bearer ${ADMIN_TOKEN}`) {
     return next();
   }
   return res.status(403).json({ erro: "Acesso restrito ao administrador." });

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const LIMITE_SUGESTOES = 3;
   const LIMITE_VOTOS = 5;
   let votosFeitos = 0;
+  let adminToken = null; // Novo: token de admin
 
   // Carregar temas do backend
   async function carregarTemas() {
@@ -27,18 +28,12 @@ const resp = await fetch('https://votacaoconectabv.onrender.com/api/temas', { cr
     }
   }
 
-  // Utilitário para ler cookie
-  function getCookie(name) {
-    const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return v ? v.pop() : '';
-  }
-
   // Renderizar lista de temas
   function renderizarTemas() {
     listaTemas.innerHTML = "";
     // Ordenar por mais votados antes de renderizar
     const temasOrdenados = [...temas].sort((a, b) => b.votos - a.votos);
-    const isAdmin = getCookie("admin") === "minha-senha-super-secreta";
+    const isAdmin = !!adminToken;
     temasOrdenados.forEach(tema => {
       const li = document.createElement('li');
       li.innerHTML = `
@@ -154,8 +149,9 @@ const resp = await fetch('https://votacaoconectabv.onrender.com/api/votar', {
       const id = Number(e.target.dataset.id);
       if (confirm("Tem certeza que deseja excluir esta sugestão?")) {
         try {
-const resp = await fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
+          const resp = await fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
             method: 'DELETE',
+            headers: adminToken ? { Authorization: `Bearer ${adminToken}` } : {},
             credentials: 'include'
           });
           if (!resp.ok) {
@@ -201,9 +197,12 @@ const resp = await fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`
         return;
       }
       try {
-fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
+        fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {})
+          },
           credentials: 'include',
           body: JSON.stringify({ titulo: novoTitulo, descricao: novaDescricao })
         }).then(async resp => {
@@ -230,7 +229,7 @@ fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
 
   // Admin login/logout
   function updateAdminUI() {
-    const isAdmin = getCookie("admin") === "minha-senha-super-secreta";
+    const isAdmin = !!adminToken;
     document.getElementById("admin-status").textContent = isAdmin ? "Modo admin ativo" : "";
     document.getElementById("admin-login-btn").style.display = isAdmin ? "none" : "";
     document.getElementById("admin-logout-btn").style.display = isAdmin ? "" : "none";
@@ -238,24 +237,33 @@ fetch(`https://votacaoconectabv.onrender.com/api/temas/${id}`, {
     renderizarTemas();
   }
 
-  document.getElementById("admin-login-btn").addEventListener("click", (e) => {
+  document.getElementById("admin-login-btn").addEventListener("click", async (e) => {
     e.preventDefault();
     const pwd = document.getElementById("admin-password").value;
-    if (pwd === "minha-senha-super-secreta") {
-      document.cookie = "admin=minha-senha-super-secreta; path=/";
+    try {
+      const resp = await fetch('https://votacaoconectabv.onrender.com/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ senha: pwd })
+      });
+      if (!resp.ok) {
+        alert("Senha incorreta.");
+        return;
+      }
+      const data = await resp.json();
+      adminToken = data.token;
       document.getElementById("admin-password").value = "";
-      // Força recarregamento para garantir leitura do cookie
-      location.reload();
-    } else {
-      alert("Senha incorreta.");
+      updateAdminUI();
+    } catch (err) {
+      alert("Erro ao fazer login admin.");
     }
   });
 
   document.getElementById("admin-logout-btn").addEventListener("click", (e) => {
     e.preventDefault();
-    document.cookie = "admin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    adminToken = null;
     document.getElementById("admin-password").value = "";
-    location.reload();
+    updateAdminUI();
   });
 
   // Inicialização
