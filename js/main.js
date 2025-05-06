@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Votação, exclusão e edição
   listaTemas.addEventListener('click', async (e) => {
     // Votação
-    if (e.target.classList.contains('upvote-btn')) {
+    if (e.target.classList.contains('upvote-bar')) {
       if (votosFeitos >= LIMITE_VOTOS) {
         alert("Você atingiu o limite de votos esta semana.");
         return;
