@@ -2,7 +2,7 @@
  * Lógica principal do frontend da plataforma de votação
  * Atualizado: usa backend remoto (votacaoconectabv.onrender.com) que conecta ao Supabase.
  */
-const BASE_URL = "https://votacaoconectabv.onrender.com";
+const BASE_URL = "https://votacaoconectabv-1.onrender.com";
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elementos principais
